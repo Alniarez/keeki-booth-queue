@@ -1,0 +1,11 @@
+services:
+  keeki-booth:
+    build: .
+    ports:
+      - "50006:7070"
+    volumes:
+      - keeki-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  keeki-data:
