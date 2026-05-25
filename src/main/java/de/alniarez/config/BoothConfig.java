@@ -8,6 +8,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public record BoothConfig(LocalTime openingTime, LocalTime closingTime, Duration blockDuration, int slotsPerBlock, String username, String password, boolean devMode) {
@@ -27,14 +28,15 @@ public record BoothConfig(LocalTime openingTime, LocalTime closingTime, Duration
         try (InputStream in = Files.newInputStream(path)) {
             props.load(in);
         }
+        Map<String, String> env = System.getenv();
         return new BoothConfig(
             LocalTime.parse(props.getProperty("opening_time")),
             LocalTime.parse(props.getProperty("closing_time")),
             Duration.ofMinutes(Long.parseLong(props.getProperty("block_duration_minutes"))),
             Integer.parseInt(props.getProperty("slots_per_block")),
-            props.getProperty("username"),
-            props.getProperty("password"),
-            Boolean.parseBoolean(props.getProperty("dev_mode", "false"))
+            env.getOrDefault("BOOTH_USERNAME", props.getProperty("username")),
+            env.getOrDefault("BOOTH_PASSWORD", props.getProperty("password")),
+            Boolean.parseBoolean(env.getOrDefault("BOOTH_DEV_MODE", props.getProperty("dev_mode", "false")))
         );
     }
 }

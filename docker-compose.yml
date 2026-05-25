@@ -5,6 +5,10 @@ services:
       - "50006:7070"
     volumes:
       - keeki-data:/app/data
+    environment:
+      - BOOTH_USERNAME
+      - BOOTH_PASSWORD
+      - BOOTH_DEV_MODE
     restart: unless-stopped
 
 volumes:
