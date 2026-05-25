@@ -30,10 +30,10 @@ public record BoothConfig(LocalTime openingTime, LocalTime closingTime, Duration
         }
         Map<String, String> env = System.getenv();
         return new BoothConfig(
-            LocalTime.parse(props.getProperty("opening_time")),
-            LocalTime.parse(props.getProperty("closing_time")),
-            Duration.ofMinutes(Long.parseLong(props.getProperty("block_duration_minutes"))),
-            Integer.parseInt(props.getProperty("slots_per_block")),
+            LocalTime.parse(env.getOrDefault("BOOTH_OPENING_TIME", props.getProperty("opening_time"))),
+            LocalTime.parse(env.getOrDefault("BOOTH_CLOSING_TIME", props.getProperty("closing_time"))),
+            Duration.ofMinutes(Long.parseLong(env.getOrDefault("BOOTH_BLOCK_DURATION", props.getProperty("block_duration_minutes")))),
+            Integer.parseInt(env.getOrDefault("BOOTH_SLOTS_PER_BLOCK", props.getProperty("slots_per_block"))),
             env.getOrDefault("BOOTH_USERNAME", props.getProperty("username")),
             env.getOrDefault("BOOTH_PASSWORD", props.getProperty("password")),
             Boolean.parseBoolean(env.getOrDefault("BOOTH_DEV_MODE", props.getProperty("dev_mode", "false")))

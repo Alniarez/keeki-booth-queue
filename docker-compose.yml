@@ -6,6 +6,10 @@ services:
     volumes:
       - keeki-data:/app/data
     environment:
+      - BOOTH_OPENING_TIME
+      - BOOTH_CLOSING_TIME
+      - BOOTH_BLOCK_DURATION
+      - BOOTH_SLOTS_PER_BLOCK
       - BOOTH_USERNAME
       - BOOTH_PASSWORD
       - BOOTH_DEV_MODE
