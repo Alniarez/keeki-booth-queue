@@ -6,5 +6,7 @@ RUN ./gradlew installDist --no-daemon
 FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 COPY --from=build /app/build/install/keeki-booth .
+COPY --from=build /app/booth.properties .
+VOLUME /app/data
 EXPOSE 7070
 ENTRYPOINT ["bin/keeki-booth"]
