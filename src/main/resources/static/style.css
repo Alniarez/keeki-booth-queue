@@ -81,6 +81,10 @@ header h2 {
 .menu {
     margin-left: auto;
     position: relative;
+    -webkit-user-select: none;    
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .burger {
