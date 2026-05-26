@@ -72,6 +72,48 @@ public class BookingStore {
         }
     }
 
+    public Set<String> getBlockedTimes(String date) {
+        try (Connection conn = db.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                 "SELECT time FROM blocked_blocks WHERE date = ?")) {
+            stmt.setString(1, date);
+            ResultSet rs = stmt.executeQuery();
+            Set<String> blocked = new HashSet<>();
+            while (rs.next()) blocked.add(rs.getString(1));
+            return blocked;
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to get blocked times", e);
+        }
+    }
+
+    public void toggleBlock(String date, String time) {
+        try (Connection conn = db.getConnection();
+             PreparedStatement check = conn.prepareStatement(
+                 "SELECT COUNT(*) FROM blocked_blocks WHERE date = ? AND time = ?")) {
+            check.setString(1, date);
+            check.setString(2, time);
+            ResultSet rs = check.executeQuery();
+            rs.next();
+            if (rs.getInt(1) > 0) {
+                try (PreparedStatement del = conn.prepareStatement(
+                        "DELETE FROM blocked_blocks WHERE date = ? AND time = ?")) {
+                    del.setString(1, date);
+                    del.setString(2, time);
+                    del.executeUpdate();
+                }
+            } else {
+                try (PreparedStatement ins = conn.prepareStatement(
+                        "INSERT INTO blocked_blocks (date, time) VALUES (?, ?)")) {
+                    ins.setString(1, date);
+                    ins.setString(2, time);
+                    ins.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to toggle block", e);
+        }
+    }
+
     private String generateUniqueCode(Connection conn) throws SQLException {
         Set<String> existing = new HashSet<>();
         try (ResultSet rs = conn.createStatement().executeQuery("SELECT code FROM bookings")) {

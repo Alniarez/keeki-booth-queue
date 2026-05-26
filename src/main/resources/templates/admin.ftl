@@ -63,7 +63,16 @@
             <div class="time-block admin-block <#if block.taken == 0>free<#elseif block.taken == block.total>full<#else>partial</#if>">
                 <div class="admin-block-header">
                     <span class="block-time">${block.time}</span>
-                    <span class="slot-count">${block.taken} / ${block.total}</span>
+                    <div class="block-header-right">
+                        <span class="slot-count">${block.taken} / ${block.total}</span>
+                        <form method="post" action="/block/toggle">
+                            <input type="hidden" name="date" value="${date}">
+                            <input type="hidden" name="time" value="${block.time}">
+                            <button type="submit" class="block-toggle <#if block.blocked>active</#if>">
+                                <#if block.blocked>Unblock<#else>Block</#if>
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
                 <div class="progress-bar">

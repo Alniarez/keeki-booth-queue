@@ -20,6 +20,13 @@ public class Database {
                     code CHAR(5)     NOT NULL UNIQUE
                 )
             """);
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS blocked_blocks (
+                    date VARCHAR(10) NOT NULL,
+                    time VARCHAR(5)  NOT NULL,
+                    PRIMARY KEY (date, time)
+                )
+            """);
         }
     }
 

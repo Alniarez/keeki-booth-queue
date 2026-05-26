@@ -24,13 +24,15 @@
 <main class="times">
     <#list blocks as block>
 
-        <div class="time-block <#if block.taken == 0>free<#elseif block.taken == block.total>full<#else>partial</#if>"
-             <#if block.taken != block.total>onclick="openBooking('${block.time}')"</#if>>
+        <div class="time-block <#if block.blocked>blocked<#elseif block.taken == 0>free<#elseif block.taken == block.total>full<#else>partial</#if>"
+             <#if !block.blocked && block.taken != block.total>onclick="openBooking('${block.time}')"</#if>>
 
             <span class="block-time">${block.time}</span>
 
             <div>
-                <#if block.taken == block.total>
+                <#if block.blocked>
+                    Not available
+                <#elseif block.taken == block.total>
                     Booked out
                 <#else>
                     ${block.total - block.taken} slots free

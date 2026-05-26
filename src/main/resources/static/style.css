@@ -9,6 +9,7 @@
     --color-slot-free: #d4edda;
     --color-slot-partial: #fff3cd;
     --color-slot-full: #f8d7da;
+    --color-slot-blocked: #e8e8e8;
 
     --color-book: #3a86d4;
     --color-cancel: #e0e0e0;
@@ -211,9 +212,30 @@ header h2 {
 
 .admin-block-header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     margin-bottom: 0.5rem;
+}
+
+.block-header-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.block-toggle {
+    background: none;
+    border: 2px solid #aaa;
+    border-radius: 4px;
+    color: #888;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.2rem 0.6rem;
+}
+
+.block-toggle.active {
+    border-color: var(--color-border);
+    color: var(--color-border);
 }
 
 .slot-count {
@@ -287,6 +309,7 @@ header h2 {
 .time-block.free     { background-color: var(--color-slot-free); }
 .time-block.partial  { background-color: var(--color-slot-partial); }
 .time-block.full     { background-color: var(--color-slot-full); }
+.time-block.blocked  { background-color: var(--color-slot-blocked); cursor: not-allowed; }
 
 .block-time {
     display: block;

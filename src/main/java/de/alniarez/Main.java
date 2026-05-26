@@ -79,6 +79,11 @@ public class Main {
                     return;
                 }
 
+                if (store.getBlockedTimes(date).contains(time)) {
+                    ctx.status(409).result("{\"error\":\"Block is not available\"}");
+                    return;
+                }
+
                 Slot slot = store.book(date, time, name.trim(), config.slotsPerBlock());
                 if (slot == null) {
                     ctx.status(409).result("{\"error\":\"Block is full\"}");
@@ -101,6 +106,13 @@ public class Main {
                 ctx.render("/templates/admin.ftl", model);
             });
 
+            cfg.routes.post("/block/toggle", ctx -> {
+                String date = ctx.formParam("date");
+                String time = ctx.formParam("time");
+                store.toggleBlock(date, time);
+                ctx.redirect("/admin?date=" + date);
+            });
+
             cfg.routes.post("/booking/delete", ctx -> {
                 String date = ctx.formParam("date");
                 String time = ctx.formParam("time");
@@ -113,19 +125,22 @@ public class Main {
     }
 
     private static List<Map<String, Object>> buildBlockData(List<TimeSlot> blocks, BookingStore store, String date, int total) {
+        Set<String> blocked = store.getBlockedTimes(date);
         return blocks.stream()
             .map(b -> {
-                List<Slot> booked = store.getBookings(date, b.startTime().toString());
+                String time = b.startTime().toString();
+                List<Slot> booked = store.getBookings(date, time);
                 List<Map<String, String>> slots = booked.stream()
                     .map(s -> Map.of("name", s.name(), "code", s.code()))
                     .collect(Collectors.toList());
                 int taken = booked.size();
                 Map<String, Object> m = new HashMap<>();
-                m.put("time", b.startTime().toString());
+                m.put("time", time);
                 m.put("slots", slots);
                 m.put("taken", taken);
                 m.put("total", total);
                 m.put("pct", total > 0 ? taken * 100 / total : 0);
+                m.put("blocked", blocked.contains(time));
                 return m;
             })
             .collect(Collectors.toList());
